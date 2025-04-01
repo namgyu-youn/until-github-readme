@@ -9,17 +9,27 @@ const blogService = new BlogService();
 export const generateSvg = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
+  const { username } = event.queryStringParameters ?? {};
+
+  if (!username) {
+    return {
+      statusCode: 400,
+      body: "username is required",
+    };
+  }
+
   try {
-    console.log("env: ", process.env.NODE_ENV);
-    const articles = await blogService.getLatestArticles(BLOG_POST_SHOW_COUNT);
-    const svgContent = generateSvgContent(articles);
+    const articles = await blogService.getLatestArticles(
+      username,
+      BLOG_POST_SHOW_COUNT
+    );
+    const svgContent = await generateSvgContent(articles);
 
     return {
       statusCode: 200,
       headers: {
         "Content-Type": "image/svg+xml",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET",
+        "Cache-Control": "no-cache",
         // "Cache-Control": "public, max-age=3600",
       },
       body: svgContent,

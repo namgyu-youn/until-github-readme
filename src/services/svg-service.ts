@@ -1,5 +1,7 @@
-import { Article } from "../types/blog";
-import { take } from "../utils/take";
+import { Article } from '../types/blog';
+import { encodeImageBase64 } from '../utils/encodeImageBase64';
+import { formatDate } from '../utils/formatDate';
+import { take } from '../utils/take';
 
 const POSITIONS = [
   { x: 0, y: 0 },
@@ -8,10 +10,8 @@ const POSITIONS = [
   { x: 350, y: 320 },
 ];
 
-export function generateSvgContent(articles: Article[]) {
-  const articleCards = articles.map((post, index) =>
-    createArticleCard(post, POSITIONS[index])
-  );
+export async function generateSvgContent(articles: Article[]) {
+  const articleCards = await Promise.all(articles.map((post, index) => createArticleCard(post, POSITIONS[index])));
 
   return `
   <svg xmlns="http://www.w3.org/2000/svg" width="750" height="750">
@@ -35,20 +35,17 @@ export function generateSvgContent(articles: Article[]) {
   <text x="30" y="50" class="header">📝 최신 블로그 글</text>
 
 <g class="card-container" transform="translate(30, 80)">
-  ${articleCards.join("")}
+  ${articleCards.join('')}
   </g>
 </svg>`;
 }
 
-export function createArticleCard(
-  article: Article,
-  pos: { x: number; y: number }
-) {
+export async function createArticleCard(article: Article, pos: { x: number; y: number }) {
   const url = `https://until.blog/@${article.blog.username}/${article.urlSlug}`;
 
   return `<g class="card" transform="translate(${pos.x}, ${pos.y})">
     <!-- 이미지 영역 (border와 둥근 모서리 적용) -->
-    ${getImageOrFallback(article, url)}
+    ${await getImageOrFallback(article, url)}
     <!-- 제목 -->
     <a href="${url}">
       <text x="0" y="210" class="title">${take(article.title, 25)}</text>
@@ -63,17 +60,17 @@ export function createArticleCard(
 
     <!-- 메타 정보 (작성일, 읽는 시간) -->
     <g transform="translate(0,280)">
-      <text x="0" y="0" class="meta">${new Date(article.createdAt).toLocaleDateString()}</text>
+      <text x="0" y="0" class="meta">${formatDate(article.createdAt)}</text>
       <text x="80" y="0" class="meta">${article.minRead} min read</text>
     </g>
   </g>`;
 }
 
-function getImageOrFallback(article: Article, url: string) {
+async function getImageOrFallback(article: Article, url: string) {
   if (article.thumbnailUrl !== null) {
     return `<a href="${url}" clip-path="url(#imgClip)">
       <rect x="0" y="0" width="300" height="180" rx="12" ry="12" fill="none" stroke="#d1d5db"/>
-      <image x="0" y="0" width="300" height="180" href="${article.thumbnailUrl}" preserveAspectRatio="xMidYMid slice"/>
+      <image x="0" y="0" width="300" height="180" href="data:image/png;base64,${await encodeImageBase64(article.thumbnailUrl)}" preserveAspectRatio="xMidYMid slice"/>
     </a>`;
   }
 

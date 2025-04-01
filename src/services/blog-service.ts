@@ -11,12 +11,15 @@ export class BlogService {
    * @param limit 가져올 포스트 수 (기본값: 5)
    * @returns 블로그 포스트 배열
    */
-  public async getLatestArticles(limit: number): Promise<Article[]> {
+  public async getLatestArticles(
+    username: string,
+    limit: number
+  ): Promise<Article[]> {
     // TODO: 가짜 api 호출하는 코드 추가 필요
 
     try {
       const response = await axios.get<UntilApiResponse>(
-        `https://api2.until.blog/blog/octoping/articles?pageSize=${limit}`
+        `https://api2.until.blog/blog/${username}/articles?pageSize=${limit}`
       );
 
       return response.data.articles;
