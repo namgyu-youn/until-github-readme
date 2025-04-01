@@ -1,215 +1,85 @@
-import { BlogPost, SvgOptions } from "../types/blog";
+import { Article } from "../types/blog";
+import { take } from "../utils/take";
 
-/**
- * SVG 생성 서비스
- * 블로그 포스트 데이터를 기반으로 SVG 이미지를 생성합니다.
- */
-export class SvgService {
-  /**
-   * 블로그 포스트 목록을 SVG로 변환합니다.
-   * @param posts 블로그 포스트 배열
-   * @param options SVG 생성 옵션
-   * @returns SVG 문자열
-   */
-  public generatePostsSvg(posts: BlogPost[], options: SvgOptions = {}): string {
-    const {
-      title = "Until 블로그 최신 글",
-      maxPosts = 5,
-      theme = "light",
-    } = options;
+const POSITIONS = [
+  { x: 0, y: 0 },
+  { x: 350, y: 0 },
+  { x: 0, y: 320 },
+  { x: 350, y: 320 },
+];
 
-    // 테마에 따른 색상 설정
-    const colors = this.getThemeColors(theme);
+export function generateSvgContent(articles: Article[]) {
+  const articleCards = articles.map((post, index) =>
+    createArticleCard(post, POSITIONS[index])
+  );
 
-    // 최대 표시할 포스트 수로 제한
-    const limitedPosts = posts.slice(0, maxPosts);
+  return `
+  <svg xmlns="http://www.w3.org/2000/svg" width="750" height="750">
+  <defs>
+    <clipPath id="imgClip" width="300" height="180" rx="12" ry="12">
+      <rect width="300" height="180" rx="12" ry="12"/>
+    </clipPath>
+    <style>
+      .card { font-family: 'Pretendard', sans-serif; }
+      .header { font-size: 24px; font-weight: 600; fill: #111827; }
+      .title { font-size: 16px; font-weight: 600; fill: #111827; }
+      .desc { font-size: 14px; font-weight: 300; fill: #6b7280; }
+      .meta { font-size: 12px; font-weight: 300; fill: #9ca3af; }
+      a { text-decoration: none; cursor: pointer; }
+      image { transition: transform 0.3s ease-in-out; }
+      .card:hover image { transform: scale(1.025); }
+    </style>
+  </defs>
 
-    // SVG 높이 계산 (헤더 + 포스트 * 포스트당 높이 + 푸터)
-    const headerHeight = 60;
-    const postHeight = 100;
-    const footerHeight = 40;
-    const totalHeight =
-      headerHeight + limitedPosts.length * postHeight + footerHeight;
+  <!-- 헤더 -->
+  <text x="30" y="50" class="header">📝 최신 블로그 글</text>
 
-    // SVG 내용 생성
-    let svg = `
-      <svg width="800" height="${totalHeight}" xmlns="http://www.w3.org/2000/svg">
-        <style>
-          .container {
-            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif;
-            line-height: 1.5;
-          }
-          .header {
-            font-size: 24px;
-            font-weight: bold;
-            fill: ${colors.title};
-          }
-          .post-title {
-            font-size: 16px;
-            font-weight: bold;
-            fill: ${colors.text};
-            text-decoration: none;
-          }
-          .post-title:hover {
-            text-decoration: underline;
-          }
-          .post-date {
-            font-size: 12px;
-            fill: ${colors.subtext};
-          }
-          .post-summary {
-            font-size: 14px;
-            fill: ${colors.text};
-          }
-          .post-tag {
-            font-size: 12px;
-            fill: ${colors.tag};
-          }
-          .footer {
-            font-size: 12px;
-            fill: ${colors.subtext};
-          }
-          a {
-            cursor: pointer;
-          }
-          ${options.customCss || ""}
-        </style>
-        
-        <rect width="100%" height="100%" fill="${colors.background}" rx="8" ry="8" />
-        
-        <g class="container">
-          <!-- 헤더 -->
-          <text x="40" y="40" class="header">${this.escapeXml(title)}</text>
-          
-          <!-- 포스트 목록 -->
-          ${this.generatePostsContent(limitedPosts, headerHeight, postHeight, colors)}
-          
-          <!-- 푸터 -->
-          <text x="40" y="${totalHeight - 20}" class="footer">
-            Generated with 💖 by until-github-readme
-          </text>
-        </g>
-      </svg>
-    `;
-
-    // 공백 제거 및 SVG 최적화
-    return svg.trim().replace(/\s+/g, " ");
-  }
-
-  /**
-   * 포스트 목록 SVG 콘텐츠를 생성합니다.
-   * @param posts 포스트 배열
-   * @param startY 시작 Y 좌표
-   * @param postHeight 포스트당 높이
-   * @param colors 테마 색상
-   * @returns 포스트 목록 SVG 문자열
-   */
-  private generatePostsContent(
-    posts: BlogPost[],
-    startY: number,
-    postHeight: number,
-    colors: ThemeColors
-  ): string {
-    return posts
-      .map((post, index) => {
-        const y = startY + index * postHeight;
-        const postDate = new Date(post.publishedAt).toLocaleDateString(
-          "ko-KR",
-          {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }
-        );
-
-        // 태그 문자열 생성
-        const tags =
-          post.tags && post.tags.length > 0
-            ? post.tags
-                .slice(0, 3)
-                .map((tag) => `#${tag}`)
-                .join(" ")
-            : "";
-
-        // 요약 텍스트 제한 (필요시)
-        const summary = post.summary ? this.truncateText(post.summary, 80) : "";
-
-        return `
-        <!-- 포스트 ${index + 1} -->
-        <g transform="translate(40, ${y + 20})">
-          <a href="${this.escapeXml(post.url)}" target="_blank">
-            <text x="0" y="0" class="post-title">${this.escapeXml(post.title)}</text>
-          </a>
-          <text x="0" y="20" class="post-date">${postDate}</text>
-          ${summary ? `<text x="0" y="40" class="post-summary">${this.escapeXml(summary)}</text>` : ""}
-          ${tags ? `<text x="0" y="65" class="post-tag">${this.escapeXml(tags)}</text>` : ""}
-        </g>
-      `;
-      })
-      .join("");
-  }
-
-  /**
-   * 테마에 따른 색상 설정을 반환합니다.
-   * @param theme 테마 ('light' | 'dark')
-   * @returns 테마 색상 객체
-   */
-  private getThemeColors(theme: "light" | "dark"): ThemeColors {
-    if (theme === "dark") {
-      return {
-        background: "#0d1117",
-        title: "#e6edf3",
-        text: "#c9d1d9",
-        subtext: "#8b949e",
-        tag: "#58a6ff",
-      };
-    }
-
-    // 기본 라이트 테마
-    return {
-      background: "#ffffff",
-      title: "#24292f",
-      text: "#24292f",
-      subtext: "#57606a",
-      tag: "#0969da",
-    };
-  }
-
-  /**
-   * 텍스트가 너무 길 경우 자르고 줄임표를 추가합니다.
-   * @param text 원본 텍스트
-   * @param maxLength 최대 길이
-   * @returns 제한된 텍스트
-   */
-  private truncateText(text: string, maxLength: number): string {
-    if (text.length <= maxLength) {
-      return text;
-    }
-    return text.substring(0, maxLength - 3) + "...";
-  }
-
-  /**
-   * XML에서 특수 문자를 이스케이프 처리합니다.
-   * @param str 원본 문자열
-   * @returns 이스케이프된 문자열
-   */
-  private escapeXml(str: string): string {
-    return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&apos;");
-  }
+<g class="card-container" transform="translate(30, 80)">
+  ${articleCards.join("")}
+  </g>
+</svg>`;
 }
 
-/**
- * 테마 색상 인터페이스
- */
-interface ThemeColors {
-  background: string;
-  title: string;
-  text: string;
-  subtext: string;
-  tag: string;
+export function createArticleCard(
+  article: Article,
+  pos: { x: number; y: number }
+) {
+  const url = `https://until.blog/@${article.blog.username}/${article.urlSlug}`;
+
+  return `<g class="card" transform="translate(${pos.x}, ${pos.y})">
+    <!-- 이미지 영역 (border와 둥근 모서리 적용) -->
+    ${getImageOrFallback(article, url)}
+    <!-- 제목 -->
+    <a href="${url}">
+      <text x="0" y="210" class="title">${take(article.title, 25)}</text>
+    </a>
+
+    <!-- 설명: 두 줄로 표현 -->
+    <a href="${url}">
+      <text x="0" y="235" class="desc">
+        <tspan x="0" dy="0">${take(article.summary, 30)}</tspan>
+      </text>
+    </a>
+
+    <!-- 메타 정보 (작성일, 읽는 시간) -->
+    <g transform="translate(0,280)">
+      <text x="0" y="0" class="meta">${new Date(article.createdAt).toLocaleDateString()}</text>
+      <text x="80" y="0" class="meta">${article.minRead} min read</text>
+    </g>
+  </g>`;
+}
+
+function getImageOrFallback(article: Article, url: string) {
+  if (article.thumbnailUrl !== null) {
+    return `<a href="${url}" clip-path="url(#imgClip)">
+      <rect x="0" y="0" width="300" height="180" rx="12" ry="12" fill="none" stroke="#d1d5db"/>
+      <image x="0" y="0" width="300" height="180" href="${article.thumbnailUrl}" preserveAspectRatio="xMidYMid slice"/>
+    </a>`;
+  }
+
+  // fallback
+  return `<a href="${url}" clip-path="url(#imgClip)">
+          <rect width="300" height="180" rx="12" ry="12" fill="#262626" stroke="#d1d5db"/>
+          <svg stroke="#52525c" fill="none" stroke-width="0" x="144" y="84" viewBox="0 0 24 24" class="text-label-assertive" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M8.01562 6.98193C7.46334 6.98193 7.01562 7.43285 7.01562 7.98513C7.01562 8.53742 7.46334 8.98833 8.01563 8.98833H15.9659C16.5182 8.98833 16.9659 8.53742 16.9659 7.98513C16.9659 7.43285 16.5182 6.98193 15.9659 6.98193H8.01562Z" fill="#52525c"></path><path d="M7.01562 12C7.01562 11.4477 7.46334 10.9968 8.01562 10.9968H15.9659C16.5182 10.9968 16.9659 11.4477 16.9659 12C16.9659 12.5523 16.5182 13.0032 15.9659 13.0032H8.01563C7.46334 13.0032 7.01562 12.5523 7.01562 12Z" fill="#52525c"></path><path d="M8.0249 15.0122C7.47262 15.0122 7.0249 15.4631 7.0249 16.0154C7.0249 16.5677 7.47262 17.0186 8.0249 17.0186H15.9752C16.5275 17.0186 16.9752 16.5677 16.9752 16.0154C16.9752 15.4631 16.5275 15.0122 15.9752 15.0122H8.0249Z" fill="#52525c"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M3 6C3 4.34315 4.34315 3 6 3H18C19.6569 3 21 4.34315 21 6V18C21 19.6569 19.6569 21 18 21H6C4.34315 21 3 19.6569 3 18V6ZM6 5H18C18.5523 5 19 5.44772 19 6V18C19 18.5523 18.5523 19 18 19H6C5.44772 19 5 18.5523 5 18V6C5 5.44772 5.44772 5 6 5Z" fill="#52525c"></path></svg>
+        </a>`;
 }

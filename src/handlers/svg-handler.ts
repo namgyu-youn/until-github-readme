@@ -1,38 +1,18 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { BlogService } from "../services/blog-service";
-import { SvgService } from "../services/svg-service";
-import { SvgOptions } from "../types/blog";
+import { generateSvgContent } from "../services/svg-service";
 
-/**
- * 블로그 포스트를 SVG 이미지로 변환하여 반환하는 핸들러
- */
+const BLOG_POST_SHOW_COUNT = 4;
+
+const blogService = new BlogService();
+
 export const generateSvg = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
-    const query = event.queryStringParameters || {};
-
-    // 쿼리 파라미터에서 옵션을 가져옵니다.
-    const svgOptions: SvgOptions = {
-      title: query.title,
-      maxPosts: query.max ? parseInt(query.max) : 5,
-      theme:
-        query.theme === "dark" || query.theme === "light"
-          ? query.theme
-          : "light",
-      customCss: query.css,
-    };
-
-    // 환경 변수에서 API URL을 가져옵니다. 없으면 mock을 사용합니다.
-    const apiUrl = process.env.UNTIL_API_URL || "mock";
-    const blogService = new BlogService(apiUrl);
-    const svgService = new SvgService();
-
-    // 블로그 포스트를 가져옵니다.
-    const posts = await blogService.getLatestPosts(svgOptions.maxPosts || 5);
-
-    // SVG를 생성합니다.
-    const svgContent = svgService.generatePostsSvg(posts, svgOptions);
+    console.log("env: ", process.env.NODE_ENV);
+    const articles = await blogService.getLatestArticles(BLOG_POST_SHOW_COUNT);
+    const svgContent = generateSvgContent(articles);
 
     return {
       statusCode: 200,
@@ -40,7 +20,7 @@ export const generateSvg = async (
         "Content-Type": "image/svg+xml",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET",
-        "Cache-Control": "public, max-age=3600", // 1시간 캐싱
+        // "Cache-Control": "public, max-age=3600",
       },
       body: svgContent,
     };

@@ -28,18 +28,6 @@ package:
     - "!*.md"
 
 functions:
-  blogPosts:
-    handler: src/handlers/blog-posts-handler.getBlogPosts
-    events:
-      - httpApi:
-          path: /blog-posts
-          method: get
-    package:
-      patterns:
-        - "src/handlers/blog-posts-handler.ts"
-        - "src/services/**"
-        - "src/types/**"
-
   blogPostsSvg:
     handler: src/handlers/svg-handler.generateSvg
     events:
