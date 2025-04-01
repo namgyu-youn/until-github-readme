@@ -1,41 +1,34 @@
-/**
- * Until 블로그 포스트의 데이터 인터페이스
- */
-export interface BlogPost {
-  /** 포스트 ID */
-  id: string;
-  /** 포스트 제목 */
-  title: string;
-  /** 포스트 내용 요약 */
-  summary?: string;
-  /** 포스트 URL */
-  url: string;
-  /** 포스트 작성일 */
-  publishedAt: string;
-  /** 포스트 작성자 */
-  author?: {
-    /** 작성자 이름 */
-    name: string;
-    /** 작성자 이미지 URL */
-    imageUrl?: string;
-  };
-  /** 포스트 태그 */
-  tags?: string[];
+export interface UntilApiResponse {
+  count: number;
+  articles: Article[];
+  hasMore: boolean;
 }
 
-/**
- * Until API 응답 타입
- */
-export interface UntilApiResponse {
-  /** 포스트 목록 */
-  posts: BlogPost[];
-  /** 다음 페이지 토큰 */
-  nextPageToken?: string;
+export interface Article {
+  articleId: number;
+  title: string;
+  summary: string;
+  urlSlug: string;
+  thumbnailUrl: string | null;
+  author: {
+    profileName: string;
+    username: string;
+    profileImgUrl: string | null;
+  };
+  blog: {
+    profileName: string;
+    username: string;
+    profileImgUrl: string | null;
+  };
+  tags: { name: string; slug: string }[];
+  minRead: number;
+  createdAt: string;
 }
 
 /**
  * SVG 생성에 필요한 구성 옵션
  */
+// TODO: 구현 필요
 export interface SvgOptions {
   /** 제목 */
   title?: string;
