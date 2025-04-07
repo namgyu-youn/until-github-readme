@@ -1,4 +1,5 @@
 import { ArticleResponse } from "../types/blog";
+import { formatDate } from "../utils/formatDate";
 import { Author } from "./Author";
 import { Blog } from "./Blog";
 
@@ -11,8 +12,8 @@ export class Article {
     public readonly thumbnailUrl: string | null,
     public readonly author: Author,
     public readonly blog: Blog,
-    public readonly urlSlug: string,
-    public readonly createdAt: Date,
+    private readonly urlSlug: string,
+    private readonly _createdAt: Date,
   ) {}
 
   public static fromResponse(response: ArticleResponse) {
@@ -31,6 +32,10 @@ export class Article {
 
   public getUrl() {
     return `https://until.blog/@${this.blog.username}/${this.urlSlug}`;
+  }
+
+  public get createdAt() {
+    return formatDate(this._createdAt);
   }
 
   public isThumbnailExists(): this is Article & { thumbnailUrl: string } {

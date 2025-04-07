@@ -1,5 +1,4 @@
 import { Position } from "../../types/position";
-import { formatDate } from "../../utils/formatDate";
 import { take } from "../../utils/take";
 import { Article } from "../Article";
 import { ArticleCardThumbnail } from "./ArticleCardThumbnail";
@@ -28,7 +27,7 @@ export class ArticleCard {
       </a>
   
       <g id="meta" transform="translate(0,280)">
-        <text x="0" y="0" class="meta">${formatDate(this.article.createdAt)}</text>
+        <text x="0" y="0" class="meta">${this.article.createdAt}</text>
         <text x="80" y="0" class="meta">${this.article.minRead} min read</text>
       </g>
     </g>`;
