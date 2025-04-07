@@ -1,5 +1,4 @@
 import { ArticleResponse } from "../types/blog";
-import { ArticleThumbnail } from "./ArticleThumbnail";
 import { Author } from "./Author";
 import { Blog } from "./Blog";
 
@@ -9,7 +8,7 @@ export class Article {
     public readonly title: string,
     public readonly summary: string,
     public readonly minRead: number,
-    public readonly thumbnail: ArticleThumbnail,
+    public readonly thumbnailUrl: string | null,
     public readonly author: Author,
     public readonly blog: Blog,
     public readonly urlSlug: string,
@@ -22,7 +21,7 @@ export class Article {
       response.title,
       response.summary,
       response.minRead,
-      new ArticleThumbnail(response.thumbnailUrl),
+      response.thumbnailUrl,
       new Author(response.author),
       new Blog(response.blog),
       response.urlSlug,
@@ -34,7 +33,7 @@ export class Article {
     return `https://until.blog/@${this.blog.username}/${this.urlSlug}`;
   }
 
-  public isThumbnailExists() {
-    return this.thumbnail.thumbnailUrl !== null;
+  public isThumbnailExists(): this is Article & { thumbnailUrl: string } {
+    return this.thumbnailUrl !== null;
   }
 }

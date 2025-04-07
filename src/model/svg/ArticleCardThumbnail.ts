@@ -1,25 +1,24 @@
 import { encodeImageBase64 } from "../../utils/encodeImageBase64";
-import { Article } from "../Article";
 
 export interface ArticleCardThumbnail {
   getSvg(url: string): Promise<string>;
 }
 
 export class ArticleCardImageThumbnail implements ArticleCardThumbnail {
-  constructor(private readonly article: Article) {}
+  constructor(private readonly imgUrl: string) {}
 
-  public async getSvg(url: string) {
+  async getSvg(url: string) {
     return `
       <a id="thumbnail" href="${url}" clip-path="url(#imgClip)">
         <rect x="0" y="0" width="300" height="180" rx="12" ry="12" fill="none" stroke="#d1d5db"/>
-        <image x="0" y="0" width="300" height="180" href="data:image/png;base64,${await encodeImageBase64(this.article.thumbnail.thumbnailUrl!)}" preserveAspectRatio="xMidYMid slice"/>
+        <image x="0" y="0" width="300" height="180" href="data:image/png;base64,${await encodeImageBase64(this.imgUrl)}" preserveAspectRatio="xMidYMid slice"/>
       </a>
     `;
   }
 }
 
 export class ArticleCardEmptyThumbnail implements ArticleCardThumbnail {
-  public async getSvg(url: string) {
+  async getSvg(url: string) {
     return `
         <a href="${url}" clip-path="url(#imgClip)">
             <rect width="300" height="180" rx="12" ry="12" fill="#262626" stroke="#d1d5db"/>
