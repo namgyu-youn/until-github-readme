@@ -10,6 +10,10 @@ export interface ArticleResponse {
   summary: string;
   urlSlug: string;
   thumbnailUrl: string | null;
+  /**
+   * 그룹 블로그의 경우, 작성하는 유저의 정보 (author)와 글이 게시되는 블로그 (blog)가 다를 수 있음
+   * 이를 위해 작성자 정보와 게시 블로그 정보를 분리하여 반환
+   */
   author: {
     profileName: string;
     username: string;
@@ -27,8 +31,8 @@ export interface ArticleResponse {
 
 /**
  * SVG 생성에 필요한 구성 옵션
+ * TODO: 구현 필요
  */
-// TODO: 구현 필요
 export interface SvgOptions {
   /** 제목 */
   title?: string;
