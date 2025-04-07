@@ -1,15 +1,11 @@
 import { UntilApiResponse } from "../types/blog";
 import { Article } from "../model/Article";
 
-/**
- * Until 블로그 서비스 클래스
- * 블로그 포스트를 가져오는 기능을 제공합니다.
- */
 export interface BlogService {
   /**
    * 최신 블로그 포스트를 가져옵니다.
-   * @param limit 가져올 포스트 수 (기본값: 5)
-   * @returns 블로그 포스트 배열
+   * @param username 블로그 유저네임
+   * @param limit 가져올 포스트 수
    */
   getLatestArticles(username: string, limit: number): Promise<Article[]>;
 }

@@ -2,23 +2,22 @@ import { Article } from "../Article";
 import { ArticleCard } from "./ArticleCard";
 import { Position } from "../../types/position";
 
-const POSITIONS: Position[] = [
-  { x: 0, y: 0 },
-  { x: 350, y: 0 },
-  { x: 0, y: 320 },
-  { x: 350, y: 320 },
-];
-
 export class RecentArticlesBadge {
+  private static readonly POSITIONS: Position[] = [
+    { x: 0, y: 0 },
+    { x: 350, y: 0 },
+    { x: 0, y: 320 },
+    { x: 350, y: 320 },
+  ];
+
   constructor(private readonly articleCards: ArticleCard[]) {}
 
-  public static from(articles: Article[]) {
-    return new RecentArticlesBadge(articles.map((article, idx) => ArticleCard.from(article, POSITIONS[idx])));
+  public static from(articles: Article[]): RecentArticlesBadge {
+    const articleCards = articles.map((article, idx) => ArticleCard.from(article, RecentArticlesBadge.POSITIONS[idx]));
+    return new RecentArticlesBadge(articleCards);
   }
 
   public async getSvg() {
-    const recentArticleCardsSvg = await this.getRecentArticlesCardsSvg();
-
     return `
       <svg xmlns="http://www.w3.org/2000/svg" width="720" height="720">
         <defs>
@@ -43,7 +42,7 @@ export class RecentArticlesBadge {
         <text x="30" y="50" class="header">📝 블로그 최신 글</text>
     
         <g class="card-container" transform="translate(30, 80)">
-        ${recentArticleCardsSvg}
+        ${await this.getRecentArticlesCardsSvg()}
         </g>
       </svg>
     `;
