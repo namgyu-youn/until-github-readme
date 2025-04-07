@@ -13,7 +13,7 @@ export class RecentArticlesBadge {
   constructor(private readonly articleCards: ArticleCard[]) {}
 
   public static from(articles: Article[]): RecentArticlesBadge {
-    const articleCards = articles.map((article, idx) => ArticleCard.from(article, RecentArticlesBadge.POSITIONS[idx]));
+    const articleCards = articles.map((article, idx) => new ArticleCard(article, RecentArticlesBadge.POSITIONS[idx]));
     return new RecentArticlesBadge(articleCards);
   }
 

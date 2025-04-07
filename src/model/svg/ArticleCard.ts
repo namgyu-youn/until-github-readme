@@ -7,20 +7,16 @@ import { ArticleCardThumbnail } from "./ArticleCardThumbnail";
 export class ArticleCard {
   constructor(
     private readonly article: Article,
-    private readonly thumbnail: ArticleCardThumbnail,
     private readonly position: Position,
   ) {}
 
-  public static from(article: Article, position: Position) {
-    return new ArticleCard(article, ArticleCardThumbnail.of(article), position);
-  }
-
   public async getSvg() {
     const url = this.article.getUrl();
+    const thumbnail = ArticleCardThumbnail.of(this.article);
 
     return `
     <g class="card" transform="translate(${this.position.x}, ${this.position.y})">
-      ${await this.thumbnail.getSvg(url)}
+      ${await thumbnail.getSvg(url)}
       <a id="title" href="${url}">
         <text x="0" y="210" class="title">${take(this.article.title, 25)}</text>
       </a>
