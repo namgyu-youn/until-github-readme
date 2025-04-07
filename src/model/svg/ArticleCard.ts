@@ -2,7 +2,7 @@ import { Position } from "../../types/position";
 import { formatDate } from "../../utils/formatDate";
 import { take } from "../../utils/take";
 import { Article } from "../Article";
-import { ArticleCardEmptyThumbnail, ArticleCardImageThumbnail, ArticleCardThumbnail } from "./ArticleCardThumbnail";
+import { ArticleCardThumbnail } from "./ArticleCardThumbnail";
 
 export class ArticleCard {
   constructor(
@@ -12,11 +12,7 @@ export class ArticleCard {
   ) {}
 
   public static from(article: Article, position: Position) {
-    const thumbnail: ArticleCardThumbnail = article.isThumbnailExists()
-      ? new ArticleCardImageThumbnail(article.thumbnailUrl)
-      : new ArticleCardEmptyThumbnail();
-
-    return new ArticleCard(article, thumbnail, position);
+    return new ArticleCard(article, ArticleCardThumbnail.of(article), position);
   }
 
   public async getSvg() {
