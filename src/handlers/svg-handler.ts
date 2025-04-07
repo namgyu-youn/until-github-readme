@@ -1,14 +1,12 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { BlogService } from "../services/blog-service";
-import { generateSvgContent } from "../services/svg-service";
+import { BlogService, UntilBlogService } from "../services/blog-service";
+import { RecentArticlesBadge } from "../model/svg/RecentArticlesBadge";
 
-const BLOG_POST_SHOW_COUNT = 4;
+const BLOG_ARTICLE_SHOW_COUNT = 4;
 
-const blogService = new BlogService();
+const blogService: BlogService = new UntilBlogService();
 
-export const generateSvg = async (
-  event: APIGatewayProxyEvent
-): Promise<APIGatewayProxyResult> => {
+export const generateSvg = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const { username } = event.queryStringParameters ?? {};
 
   if (!username) {
@@ -19,11 +17,10 @@ export const generateSvg = async (
   }
 
   try {
-    const articles = await blogService.getLatestArticles(
-      username,
-      BLOG_POST_SHOW_COUNT
-    );
-    const svgContent = await generateSvgContent(articles);
+    const articles = await blogService.getLatestArticles(username, BLOG_ARTICLE_SHOW_COUNT);
+
+    const recentArticlesBadge = RecentArticlesBadge.from(articles);
+    const svgContent = await recentArticlesBadge.getSvg();
 
     return {
       statusCode: 200,
@@ -36,8 +33,6 @@ export const generateSvg = async (
     };
   } catch (error) {
     console.error("SVG 생성 중 오류 발생:", error);
-
-    // 오류 발생 시 간단한 오류 SVG를 반환합니다.
     const errorSvg = `
       <svg width="400" height="100" xmlns="http://www.w3.org/2000/svg">
         <rect width="400" height="100" fill="#f8d7da" rx="8" ry="8" />

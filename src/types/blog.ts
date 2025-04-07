@@ -1,10 +1,10 @@
 export interface UntilApiResponse {
   count: number;
-  articles: Article[];
+  articles: ArticleResponse[];
   hasMore: boolean;
 }
 
-export interface Article {
+export interface ArticleResponse {
   articleId: number;
   title: string;
   summary: string;

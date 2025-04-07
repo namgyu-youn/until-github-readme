@@ -4,7 +4,7 @@
   "description": "GitHub README에 Until 블로그의 최신 글을 표시하는 서비스",
   "main": "handler.js",
   "scripts": {
-    "dev": "serverless offline --disableCookieValidation --reloadHandler",
+    "dev": "serverless offline --disableCookieValidation",
     "deploy": "serverless deploy",
     "deploy:prod": "serverless deploy --stage prod",
     "build": "tsc",
@@ -20,7 +20,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.6.2",
     "serverless": "^4.10.0"
   },
   "devDependencies": {

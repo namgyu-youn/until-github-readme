@@ -1,6 +1,6 @@
-import axios from "axios";
-
 export async function encodeImageBase64(imageUrl: string) {
-  const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
-  return Buffer.from(await response.data).toString("base64");
+  return fetch(imageUrl)
+    .then((res) => res.blob())
+    .then((blob) => blob.arrayBuffer())
+    .then((buffer) => Buffer.from(buffer).toString("base64"));
 }
