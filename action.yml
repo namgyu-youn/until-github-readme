@@ -1,0 +1,32 @@
+name: 'Until Blog Widget'
+description: 'Display your latest Until blog posts in your GitHub README'
+author: 'namgyu-youn'
+
+inputs:
+  username:
+    description: 'Your Until blog username'
+    required: true
+  max_posts:
+    description: 'Maximum number of posts to display'
+    required: false
+    default: '4'
+  title:
+    description: 'Widget title'
+    required: false
+    default: '📝 Until 블로그 최신 글'
+  theme:
+    description: 'Widget theme (dark/light)'
+    required: false
+    default: 'dark'
+  filename:
+    description: 'Output filename'
+    required: false
+    default: 'blog-widget.svg'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
+
+branding:
+  icon: 'book-open'
+  color: 'blue'
