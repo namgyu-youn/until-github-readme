@@ -1,6 +1,6 @@
 name: 'Until Blog Widget'
 description: 'Display your latest Until blog posts in your GitHub README'
-author: 'namgyu-youn'
+author: "namgyu-youn <yynk2012@gmail.com>"
 
 inputs:
   username:
