@@ -11,6 +11,7 @@ Until 블로그의 최신 글 4개를 자동으로 보여줍니다.
 GitHub 프로필 저장소에 다음 워크플로우 파일을 추가하세요:
 [blog-widget.yml](https://github.com/untilled/until-github-readme/tree/main/.github/workflows/profile-widget.yml)
 
+(예를 들어, 사용자 이름이 `untilled`인 경우 경로는 `untilled/untilled/.github/workflows/profile-widget.yml`입니다.)
 
 GitHub 프로필 저장소 `README.md`에 다음 내용을 추가하세요:
 ```
