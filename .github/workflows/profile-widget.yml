@@ -20,6 +20,7 @@ jobs:
       - name: Checkout Until Reader
         uses: actions/checkout@v3
         with:
+          repository: untilled/until-github-readme
           path: until-reader
 
       - name: Setup Node
