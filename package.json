@@ -10,7 +10,7 @@
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
     "prepare": "npm run build",
-    "test": "node dist/index.js",
+    "test": "node dist/index.js"
   },
   "keywords": [
     "github",
