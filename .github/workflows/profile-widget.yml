@@ -13,8 +13,9 @@ jobs:
       - name: Checkout Profile Repo
         uses: actions/checkout@v3
         with:
-          repository: namgyu-youn/namgyu-youn
+          repository: ${{ github.repository_owner }}/${{ github.repository_owner }}
           path: profile-repo
+          token: ${{ secrets.PROFILE_REPO_TOKEN }}
 
       - name: Checkout Until Reader
         uses: actions/checkout@v3

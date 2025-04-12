@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          repository: namgyu-youn/until-github-readme # To-do
+          repository: untilled/until-github-readme
 
       - uses: actions/setup-node@v3
         with:
