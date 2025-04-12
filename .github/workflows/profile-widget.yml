@@ -1,0 +1,56 @@
+name: Update Profile Blog Widget
+on:
+  schedule: [{cron: "0 0 * * *"}]
+  workflow_dispatch:
+  push: {branches: ["main"]}
+
+jobs:
+  blog-widget:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Profile Repo
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ github.repository_owner }}/${{ github.repository_owner }}
+          path: profile-repo
+          token: ${{ secrets.PROFILE_REPO_TOKEN }}
+
+      - name: Checkout Until Reader
+        uses: actions/checkout@v3
+        with:
+          repository: untilled/until-github-readme
+          path: until-reader
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm ci
+        working-directory: ./until-reader
+
+      - name: Build
+        run: npm run build
+        working-directory: ./until-reader
+
+      - name: Generate Widget
+        run: |
+          node dist/index.js
+        working-directory: ./until-reader
+        env:
+          INPUT_USERNAME: namgyu-youn
+          INPUT_MAX_POSTS: 4
+          INPUT_THEME: dark
+          INPUT_FILENAME: ../profile-repo/blog-widget.svg
+
+      - name: Commit and Push to Profile
+        working-directory: ./profile-repo
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add blog-widget.svg
+          git commit -m "Update blog widget" || echo "No changes to commit"
+          git push
