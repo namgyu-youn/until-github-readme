@@ -9,43 +9,8 @@ Until 블로그의 최신 글 4개를 자동으로 보여줍니다.
 ## 사용법
 
 GitHub 프로필 저장소에 다음 워크플로우 파일을 추가하세요:
-`.github/workflows/blog-widget.yml`
+[blog-widget.yml](https://github.com/untilled/until-github-readme/tree/main/.github/workflows/profile-widget.yml)
 
-```yaml
-name: Update Until Blog Widget
-on:
-  # 매일 자정에 실행
-  schedule: [{cron: "0 0 * * *"}]
-  # 수동 실행 가능
-  workflow_dispatch:
-  # 선택적: 저장소 푸시 시 실행
-  push: {branches: ["master", "main"]}
-
-jobs:
-  blog-widget:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: octoping/until-github-readme@v1
-        with:
-          username: <USERNAME>>  # Until 블로그 사용자명
-          # 선택적 설정:
-          # max_posts: 4  # 표시할 최대 포스트 수
-          # title: "📝 Until 블로그 최신 글"  # 위젯 제목
-          # theme: "dark"  # 테마 (dark/light)
-          # filename: "blog-widget.svg"  # 출력 파일명
-
-      - name: Commit changes
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add blog-widget.svg
-          git commit -m "Update blog widget" || echo "No changes to commit"
-          git push
-```
 
 GitHub 프로필 저장소 `README.md`에 다음 내용을 추가하세요:
 ```
