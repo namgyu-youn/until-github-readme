@@ -24,9 +24,18 @@ inputs:
     default: 'blog-widget.svg'
 
 runs:
-  using: 'node20'
-  main: 'dist/index.js'
+  using: 'composite'
+  steps:
+    - name: Install dependencies
+      run: npm ci
+      shell: bash
 
-branding:
-  icon: 'book-open'
-  color: 'blue'
+    - name: Run action
+      run: node dist/index.js
+      shell: bash
+      env:
+        INPUT_USERNAME: ${{ inputs.username }}
+        INPUT_MAX_POSTS: ${{ inputs.max_posts }}
+        INPUT_TITLE: ${{ inputs.title }}
+        INPUT_THEME: ${{ inputs.theme }}
+        INPUT_FILENAME: ${{ inputs.filename }}
