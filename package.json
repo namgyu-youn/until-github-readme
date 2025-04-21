@@ -4,13 +4,9 @@
   "description": "GitHub README에 Until 블로그의 최신 글을 표시하는 서비스",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "serverless offline --disableCookieValidation",
-    "deploy": "serverless deploy",
-    "deploy:prod": "serverless deploy --stage prod",
+    "dev": "npm run build && node dist/dev.js",
     "clean": "rm -rf dist",
-    "build": "npm run clean && tsc",
-    "prepare": "npm run build",
-    "test": "node dist/index.js"
+    "build": "npm run clean && tsc"
   },
   "keywords": [
     "github",
@@ -38,7 +34,6 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.5.1",
     "prettier": "^3.5.3",
-    "serverless-offline": "^14.4.0",
     "typescript": "^5.8.2"
   }
 }
