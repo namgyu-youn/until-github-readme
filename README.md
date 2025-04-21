@@ -1,6 +1,9 @@
 # Until Blog GitHub README 위젯
 
-[![Until 블로그 최신 글](https://ryc04otowj.execute-api.ap-northeast-2.amazonaws.com/blog-posts-svg?username=octoping)](https://until.blog/@octoping)
+
+<div align="left">
+  <img src="blog-widget.svg" alt="Until Blog Post" width="60%">
+</div>
 
 Until 블로그의 최신 글을 GitHub 프로필에 표시할 수 있는 동적 SVG 위젯입니다.
 
