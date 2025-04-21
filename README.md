@@ -1,8 +1,7 @@
 # Until Blog GitHub README 위젯
 
-<div align="left">
-  <img src="blog-widget.svg" alt="Until Blog Post" width="60%">
-</div>
+<img src="blog-widget.svg" alt="Until Blog Post">
+
 
 Until 블로그의 최신 글을 GitHub 프로필에 표시할 수 있는 동적 SVG 위젯입니다.
 
@@ -17,10 +16,8 @@ GitHub 프로필 저장소에 다음 워크플로우 파일을 추가하세요:
 
 GitHub 프로필 저장소 `README.md`에 다음 내용을 추가하세요:
 
-```markdown
-<div align="left">
-  <img src="blog-widget.svg" alt="Until Blog Post" width="60%">
-</div>
+```html
+<img src="blog-widget.svg" alt="Until Blog Post">
 ```
 
 ## 개발 환경 설정
