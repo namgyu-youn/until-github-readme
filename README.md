@@ -8,13 +8,17 @@ Until 블로그의 최신 글 4개를 자동으로 보여줍니다.
 
 ## 사용법
 
-GitHub 프로필 README.md에 다음 코드를 추가하세요:
+GitHub 프로필 저장소에 다음 워크플로우 파일을 추가하세요:
+[blog-widget.yml](https://github.com/untilled/until-github-readme/tree/main/.github/workflows/blog-widget.yml)
 
+(예를 들어, 사용자 이름이 `untilled`인 경우 경로는 `untilled/untilled/.github/workflows/blog-widget.yml`입니다.)
+
+GitHub 프로필 저장소 `README.md`에 다음 내용을 추가하세요:
 ```markdown
-[![Until 블로그 최신 글](https://ryc04otowj.execute-api.ap-northeast-2.amazonaws.com/blog-posts-svg?username=your-username)](https://until.blog/@your-username)
+<div align="left">
+  <img src="blog-widget.svg" alt="Until Blog Post" width="60%">
+</div>
 ```
-
-`your-username`을 본인의 Until 블로그 사용자명으로 변경하세요.
 
 ## 개발 환경 설정
 

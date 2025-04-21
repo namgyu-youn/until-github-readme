@@ -1,0 +1,42 @@
+name: Update Until Blog Widget
+on:
+  schedule: [{cron: "0 0 * * *"}]
+  workflow_dispatch:
+  push: {branches: ["main"]}
+
+jobs:
+  blog-widget:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: untilled/until-github-readme
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Generate Widget
+        run: |
+          node dist/index.js
+        env:
+          INPUT_USERNAME: ${{ github.repository_owner }}
+          INPUT_MAX_POSTS: 4
+          INPUT_THEME: dark
+          INPUT_FILENAME: blog-widget.svg
+
+      - name: Commit and Push Widget
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add blog-widget.svg
+          git commit -m "Update blog widget" || echo "No changes to commit"
+          git push
