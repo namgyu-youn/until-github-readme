@@ -28,7 +28,7 @@ jobs:
         run: |
           node dist/index.js
         env:
-          INPUT_USERNAME: ${{ github.repository_owner }}
+          INPUT_USERNAME: untilled
           INPUT_MAX_POSTS: 4
           INPUT_THEME: dark
           INPUT_FILENAME: blog-widget.svg
