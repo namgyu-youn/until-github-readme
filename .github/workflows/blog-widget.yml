@@ -1,8 +1,8 @@
 name: Update Until Blog Widget
 on:
-  schedule: [{cron: "0 0 * * *"}]
+  schedule: [{ cron: "0 0 * * *" }]
   workflow_dispatch:
-  push: {branches: ["main"]}
+  push: { branches: ["main"] }
 
 jobs:
   blog-widget:
@@ -10,33 +10,51 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Main Repo
+        uses: actions/checkout@v3
+
+      - name: Checkout until-github-readme
+        uses: actions/checkout@v3
         with:
           repository: untilled/until-github-readme
+          path: until-github-readme
 
-      - uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: "20"
 
-      - name: Install dependencies
+      - name: Install until-github-readme Dependencies
         run: npm ci
+        working-directory: ./until-github-readme
 
-      - name: Build
+      - name: Build until-github-readme
         run: npm run build
+        working-directory: ./until-github-readme
 
       - name: Generate Widget
         run: |
           node dist/index.js
+        working-directory: ./until-github-readme
         env:
           INPUT_USERNAME: until
           INPUT_MAX_POSTS: 4
           INPUT_THEME: dark
           INPUT_FILENAME: blog-widget.svg
 
+      - name: Move Widget to Root
+        run: mv ./until-github-readme/blog-widget.svg .
+
       - name: Commit and Push Widget
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add blog-widget.svg
-          git commit -m "Update blog widget" || echo "No changes to commit"
-          git push
+
+           if ! git diff --staged --quiet; then
+            echo "Changes detected in blog-widget.svg. Committing and pushing..."
+            git commit -m "Update blog widget [skip ci]"
+            git push
+          else
+            echo "No changes detected. Nothing to commit."
+          fi
