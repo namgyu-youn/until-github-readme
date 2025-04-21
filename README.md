@@ -1,6 +1,5 @@
 # Until Blog GitHub README 위젯
 
-
 <div align="left">
   <img src="blog-widget.svg" alt="Until Blog Post" width="60%">
 </div>
@@ -17,6 +16,7 @@ GitHub 프로필 저장소에 다음 워크플로우 파일을 추가하세요:
 (예를 들어, 사용자 이름이 `untilled`인 경우 경로는 `untilled/untilled/.github/workflows/blog-widget.yml`입니다.)
 
 GitHub 프로필 저장소 `README.md`에 다음 내용을 추가하세요:
+
 ```markdown
 <div align="left">
   <img src="blog-widget.svg" alt="Until Blog Post" width="60%">
@@ -28,8 +28,6 @@ GitHub 프로필 저장소 `README.md`에 다음 내용을 추가하세요:
 ### 필수 요구사항
 
 - Node.js 20.x 이상
-- AWS 계정 (배포 시 필요)
-- Serverless Framework CLI
 
 ### 설치
 
@@ -50,16 +48,6 @@ npm run dev
 
 # TypeScript 빌드
 npm run build
-```
-
-### 배포
-
-```bash
-# 개발 환경 배포
-npm run deploy
-
-# 프로덕션 환경 배포
-npm run deploy:prod
 ```
 
 ## 기여하기

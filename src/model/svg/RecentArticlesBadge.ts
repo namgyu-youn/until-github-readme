@@ -12,27 +12,21 @@ export class RecentArticlesBadge {
 
   constructor(
     private readonly articleCards: ArticleCard[],
-    private readonly title: string = "📝 블로그 최신 글",
-    private readonly theme: string = "dark"
+    private readonly title: string,
+    private readonly theme: string,
   ) {}
 
-  public static from(
-    articles: Article[],
-    title: string = "📝 블로그 최신 글",
-    theme: string = "dark"
-  ): RecentArticlesBadge {
-    const articleCards = articles.map(
-      (article, idx) => new ArticleCard(article, RecentArticlesBadge.POSITIONS[idx])
-    );
+  public static from(articles: Article[], title: string, theme: string): RecentArticlesBadge {
+    const articleCards = articles.map((article, idx) => new ArticleCard(article, RecentArticlesBadge.POSITIONS[idx]));
     return new RecentArticlesBadge(articleCards, title, theme);
   }
 
   public async getSvg() {
-    const backgroundColor = this.theme === 'light' ? "#ffffff" : "#171717";
-    const headerColor = this.theme === 'light' ? "#000000" : "#ffffff";
-    const titleColor = this.theme === 'light' ? "#000000" : "#ffffff";
-    const descColor = this.theme === 'light' ? "#4b5563" : "#6b7280";
-    const metaColor = this.theme === 'light' ? "#6b7280" : "#9ca3af";
+    const backgroundColor = this.theme === "light" ? "#ffffff" : "#171717";
+    const headerColor = this.theme === "light" ? "#000000" : "#ffffff";
+    const titleColor = this.theme === "light" ? "#000000" : "#ffffff";
+    const descColor = this.theme === "light" ? "#4b5563" : "#6b7280";
+    const metaColor = this.theme === "light" ? "#6b7280" : "#9ca3af";
 
     return `
       <svg xmlns="http://www.w3.org/2000/svg" width="720" height="720">
